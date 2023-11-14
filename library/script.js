@@ -42,6 +42,10 @@ function handleNewBook(e) {
   displayLibrary()
 }
 
+function removeBook(index) {
+  myLibrary.splice(index, 1)
+}
+
 function Book(title, author, pages, read) {
   this.title = title
   this.author = author
@@ -88,10 +92,10 @@ function createCard(book, id) {
   title.textContent = book.title
 
   author = document.createElement("p")
-  author.textContent = book.author
+  author.textContent = "By " + book.author
 
   pages = document.createElement("p")
-  pages.textContent = book.pages
+  pages.textContent = book.pages + " pages"
 
   read = document.createElement("p")
   if (book.read) {
@@ -107,11 +111,19 @@ function createCard(book, id) {
     displayLibrary()
   })
 
+  removeBookButton = document.createElement("button")
+  removeBookButton.textContent = "Remove Book"
+  removeBookButton.addEventListener("click", () => {
+    removeBook(id)
+    displayLibrary()
+  })
+
   wrapper.appendChild(title)
   wrapper.appendChild(author)
   wrapper.appendChild(pages)
   wrapper.appendChild(read)
   wrapper.appendChild(toggleReadButton)
+  wrapper.appendChild(removeBookButton)
 
   return wrapper
 }
