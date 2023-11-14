@@ -1,0 +1,49 @@
+body {
+  display: flex;
+  justify-content: center;
+  min-height: 100%;
+}
+
+button {
+  width: 120px;
+}
+
+h2 {
+  margin-top: 0px;
+}
+
+div.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+div.book-entry {
+  background-color: whitesmoke;
+  padding: 2rem;
+  margin: 1rem 0px;
+}
+
+div.content-wrapper {
+  width: min(50%, 1200px);
+}
+
+dialog#create-book {
+  transform: translateY(-50%);
+}
+
+dialog#create-book[open] {
+  animation: slidedown 0.75s ease normal;
+}
+
+@keyframes slidedown {
+  from {
+    transform: translateY(-300%);
+    opacity: 0%;
+  }
+
+  to {
+    transform: translateY(-50%);
+    opacity: 100%;
+  }
+}

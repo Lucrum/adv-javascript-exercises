@@ -6,10 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Javascript Constructors</title>
   <script src="script.js" defer></script>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Your Library</h1>
-  <button id="add-book">New book</button>
   <dialog id="create-book">
     <form id="book-form">
       <label for="title">Title:</label>
@@ -27,7 +26,13 @@
     </form>
     <button id="close-form">Close</button>
   </dialog>
-  <div id="bookshelf">
+  <div class="content-wrapper">
+    <div class="header">
+      <h1>Your Library</h1>
+      <button id="add-book">New book</button>
+    </div>
+    <div id="bookshelf"></div>
+  </div>
 
   </div>
 </body>

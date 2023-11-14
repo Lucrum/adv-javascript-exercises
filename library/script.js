@@ -74,6 +74,8 @@ function addBookToLibrary(book) {
   myLibrary.push(book)
 }
 
+// iterates over the entire library and creates a new card for every book
+// not too performant for larger libraries...
 function displayLibrary() {
   new_entries = []
   let index = 0
@@ -105,14 +107,14 @@ function createCard(book, id) {
   }
 
   toggleReadButton = document.createElement("button")
-  toggleReadButton.textContent = "Toggle Read Status"
+  toggleReadButton.textContent = "Toggle Read"
   toggleReadButton.addEventListener("click", () => {
     myLibrary[id].toggleRead()
     displayLibrary()
   })
 
   removeBookButton = document.createElement("button")
-  removeBookButton.textContent = "Remove Book"
+  removeBookButton.textContent = "Remove"
   removeBookButton.addEventListener("click", () => {
     removeBook(id)
     displayLibrary()
