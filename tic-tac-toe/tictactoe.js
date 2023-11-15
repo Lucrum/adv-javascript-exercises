@@ -1,24 +1,47 @@
-const gameboard = (function () {
-  let board = [[" ", " ", " "], [" ", " ", " "], [" ", " ", " "]]
+const gameboard = (function() {
+  let fillerPlayer = createPlayer(null, " ")
+  let board = Array(3).fill(Array(3).fill(fillerPlayer))
   const addPiece = (x, y, player) => {
     if (board[x][y] == false) { // falsy values indicate empty space
-      board[x][y] = player.token
+      board[x][y] = player
     }
   }
 
-  const displayBoard = () => {
+  const victoryCheck = () => {
+    return false
+  }
+
+  return { addPiece }
+})()
+
+const victoryController = (function() {
+  const checkTicTacToe = (board, coords) => {
+    
+  }
+  return { checkTicTacToe }
+})()
+
+const displayController = (function() {
+  const displayBoard = (board) => {
     console.log(`
-       ${board[0][0]} | ${board[0][1]} | ${board[0][2]}
+       ${board[0][0].token} | ${board[0][1].token} | ${board[0][2].token}
       ---+---+---
-       ${board[1][0]} | ${board[1][1]} | ${board[1][2]}
+       ${board[1][0].token} | ${board[1][1].token} | ${board[1][2].token}
       ---+---+---
-       ${board[2][0]} | ${board[2][1]} | ${board[2][2]}
+       ${board[2][0].token} | ${board[2][1].token} | ${board[2][2].token}
     `)
   }
 
-  return { addPiece, displayBoard }
-})()
+  return { displayBoard }
+})
 
-function createPlayer (name, token) {
+function createPlayer(name, token) {
   return { name, token }
+}
+
+
+function startGame(playerOne, playerTwo) {
+  while (gameboard.victoryCheck() == false) {
+
+  }
 }
