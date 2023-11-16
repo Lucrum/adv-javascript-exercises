@@ -28,7 +28,6 @@ function closeNewBookForm() {
 function handleNewBook(e) {
   e.preventDefault()
   closeNewBookForm()
-  console.log(e)
 
   const formData = new FormData(e.target)
   newBook = new Book(
