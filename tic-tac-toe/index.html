@@ -4,11 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="tictactoe.js" defer></script>
+  <link rel="stylesheet" href="styles.css">
   <title>Document</title>
 </head>
 <body>
   <div class="content-wrapper">
-    
+    <form id="players-form">
+      <label for="player-one">Player 1's name (X)</label>
+      <input type="text" name="player-one" id="player-one" required>
+      <label for="player-two">Player 2's name (O)</label>
+      <input type="text" name="player-two" id="player-two" required>
+      <input type="submit" value="Submit" id="start-game">
+    </form>
   </div>
 </body>
 </html>
