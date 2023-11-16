@@ -1,0 +1,40 @@
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+div.content-wrapper {
+  width: 50vw;
+  height: 50vw;
+}
+
+div#board-area,
+table#game-board {
+  width: 100%;
+  height: 100%;
+}
+
+table#game-board {
+  border: 1px solid black;
+  empty-cells: show;
+}
+
+table#game-board > tbody {
+  height: 100%;
+}
+
+table#game-board td {
+  width: calc(100% / 3);
+  height: calc(100% / 3);
+  display: flex;
+}
+
+table#game-board tr {
+  width: 100%;
+  height: calc(100% / 3);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
