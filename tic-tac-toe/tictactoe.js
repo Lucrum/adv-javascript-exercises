@@ -8,8 +8,10 @@ function createPlayer(name, token) {
 }
 
 const gameController = (function() {
-  let turn
+  let turn = 0
   let players
+  let ongoing
+  const messageArea = document.createElement("div")
   const setup = (e) => {
     e.preventDefault()
     const data = new FormData(e.target)
@@ -18,17 +20,39 @@ const gameController = (function() {
     playerForm.remove()
 
     players = [playerOne, playerTwo]
-    turn = playerOne
+    ongoing = true
 
     boardArea = document.createElement("div")
     boardArea.id = "board-area"
+    wrapper.appendChild(messageArea)
+    messageArea.textContent = playerOne.name + " begins!"
     wrapper.appendChild(boardArea)
     displayController.displayBoardDOM(gameBoard.board, boardArea)
   }
 
   const processInput = (x, y) => {
-    gameBoard.addPiece(x, y, turn)
-    turn = turn === players[0] ? players[1] : players[0]
+    let currentPlayer = (turn % 2 === 0) ? players[0] : players[1]
+    let otherPlayer = (turn % 2 === 0 ) ? players[1] : players[0]
+    if (!ongoing) return false
+    gameBoard.addPiece(x, y, currentPlayer)
+    displayController.displayBoardDOM(gameBoard.board, boardArea)
+    if (gameBoard.checkVictory(x, y, currentPlayer)) {
+      triggerVictory(currentPlayer)
+    } else if (turn === 8) {
+      triggerVictory(false)
+    } else {
+      messageArea.textContent = otherPlayer.name + "'s turn!"
+      turn++
+    }
+  }
+
+  const triggerVictory = (victor) => {
+    if (victor) {
+      messageArea.textContent = victor.name + " wins!"
+    } else {
+      messageArea.textContent = "It's a tie!"
+    }
+    ongoing = false
   }
 
   return { setup, processInput }
@@ -40,6 +64,7 @@ const gameBoard = (function() {
   const addPiece = (x, y, player) => { // returns true if success
     if (board[x][y] == false) { // falsy values indicate empty space
       board[x][y] = player.token
+      console.log("adding " + player.token + " to coord " + [x, y])
       return true
     } else {
       return false
@@ -57,6 +82,7 @@ const gameBoard = (function() {
     return false
   }
 
+  // the one good reason the board is stored as a 2d array
   const checkRow = (row, player) => {
     return board[row].every(p => p === player.token)
   }
@@ -87,19 +113,19 @@ const displayController = (function() {
   }
 
   const displayBoardDOM = (board, area) => {
-    table = document.createElement("table")
-    table.id = "game-board"
-    for (const [y, row] of board.entries()) {
-      table.insertRow()
-      console.log("Generating for row: " + row)
-
-      for (const [x, value] of row.entries()) {
-        const newCell = table.rows[table.rows.length - 1].insertCell()
+    let gameBoard = document.createElement("div")
+    gameBoard.id = "game-board"
+    for (const [x, row] of board.entries()) {
+      for (const [y, value] of row.entries()) {
+        let newCell = document.createElement("div")
+        newCell.classList.add("cell")
         newCell.textContent = value
-        newCell.addEventListener("click", gameController.processInput(x, y))
+        newCell.addEventListener("click", () => gameController.processInput(x, y))
+        gameBoard.appendChild(newCell)
       }
     }
-    area.replaceChildren(table);
+    area.replaceChildren(gameBoard);
+    console.log("Rendered board")
   }
   return { displayBoardConsole, displayBoardDOM }
 })()
