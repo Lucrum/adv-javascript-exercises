@@ -1,18 +1,31 @@
 wrapper = document.querySelector("div.content-wrapper")
 playerForm = document.querySelector("form#players-form")
 
-playerForm.addEventListener("submit", (e) => gameController.setup(e))
+playerForm.addEventListener("submit", (e) => gameController.init(e))
 
 function createPlayer(name, token) {
   return { name, token }
 }
 
 const gameController = (function() {
-  let turn = 0
+  let turn
   let players
   let ongoing
-  const messageArea = document.createElement("div")
-  const setup = (e) => {
+  let controlArea
+  let messageArea
+
+  // for initial setup (generating players, etc...)
+  const init = (e) => {
+    controlArea = document.createElement("div")
+    messageArea = document.createElement("div")
+    controlArea.classList.add("control-area")
+    controlArea.appendChild(messageArea)
+
+    resetButton = document.createElement("button")
+    resetButton.textContent = "Reset Game"
+    resetButton.addEventListener("click", () => reset())
+    controlArea.appendChild(resetButton)
+    
     e.preventDefault()
     const data = new FormData(e.target)
     playerOne = createPlayer(data.get("player-one"), "X")
@@ -20,14 +33,32 @@ const gameController = (function() {
     playerForm.remove()
 
     players = [playerOne, playerTwo]
-    ongoing = true
 
+    wrapper.appendChild(controlArea)
+    setup()
+  }
+
+  // removes an existing board if there is one
+  const reset = () => {
+    let oldBoard = document.querySelector("div#board-area")
+    if (oldBoard) {
+      oldBoard.remove()
+    }
+    setup()
+  }
+
+  // for starting a new game (does not generate new players)
+  const setup = () => {
+    ongoing = true
+    turn = 0
+
+    gameBoard.generateBoard()
     boardArea = document.createElement("div")
     boardArea.id = "board-area"
-    wrapper.appendChild(messageArea)
     messageArea.textContent = playerOne.name + " begins!"
+
     wrapper.appendChild(boardArea)
-    displayController.displayBoardDOM(gameBoard.board, boardArea)
+    gameBoard.displayController.displayBoardDOM(boardArea)
   }
 
   const processInput = (x, y) => {
@@ -35,7 +66,7 @@ const gameController = (function() {
     let otherPlayer = (turn % 2 === 0 ) ? players[1] : players[0]
     if (!ongoing) return false
     gameBoard.addPiece(x, y, currentPlayer)
-    displayController.displayBoardDOM(gameBoard.board, boardArea)
+    gameBoard.displayController.displayBoardDOM(boardArea)
     if (gameBoard.checkVictory(x, y, currentPlayer)) {
       triggerVictory(currentPlayer)
     } else if (turn === 8) {
@@ -55,12 +86,16 @@ const gameController = (function() {
     ongoing = false
   }
 
-  return { setup, processInput }
+  return { init, setup, processInput }
 })()
 
 // game functionality
 const gameBoard = (function() {
-  let board = Array.from({length: 3}, e => Array(3).fill(" "))
+  let board
+  const generateBoard = () => {
+    board = Array.from({length: 3}, e => Array(3).fill(" "))
+  }
+
   const addPiece = (x, y, player) => { // returns true if success
     if (board[x][y] == false) { // falsy values indicate empty space
       board[x][y] = player.token
@@ -97,35 +132,34 @@ const gameBoard = (function() {
     return false
   }
 
-  return { addPiece, checkVictory, board }
-})()
-
-// display a given board
-const displayController = (function() {
-  const displayBoardConsole = (board) => {
-    console.log(`
-       ${board[0][0]} | ${board[0][1]} | ${board[0][2]}
-      ---+---+---
-       ${board[1][0]} | ${board[1][1]} | ${board[1][2]}
-      ---+---+---
-       ${board[2][0]} | ${board[2][1]} | ${board[2][2]}
-    `)
-  }
-
-  const displayBoardDOM = (board, area) => {
-    let gameBoard = document.createElement("div")
-    gameBoard.id = "game-board"
-    for (const [x, row] of board.entries()) {
-      for (const [y, value] of row.entries()) {
-        let newCell = document.createElement("div")
-        newCell.classList.add("cell")
-        newCell.textContent = value
-        newCell.addEventListener("click", () => gameController.processInput(x, y))
-        gameBoard.appendChild(newCell)
-      }
+  // display the board
+  const displayController = (function() {
+    const displayBoardConsole = (board) => {
+      console.log(`
+         ${board[0][0]} | ${board[0][1]} | ${board[0][2]}
+        ---+---+---
+         ${board[1][0]} | ${board[1][1]} | ${board[1][2]}
+        ---+---+---
+         ${board[2][0]} | ${board[2][1]} | ${board[2][2]}
+      `)
     }
-    area.replaceChildren(gameBoard);
-    console.log("Rendered board")
-  }
-  return { displayBoardConsole, displayBoardDOM }
+  
+    const displayBoardDOM = (area) => {
+      let gameBoard = document.createElement("div")
+      gameBoard.id = "game-board"
+      for (const [x, row] of board.entries()) {
+        for (const [y, value] of row.entries()) {
+          let newCell = document.createElement("div")
+          newCell.classList.add("cell")
+          newCell.textContent = value
+          newCell.addEventListener("click", () => gameController.processInput(x, y))
+          gameBoard.appendChild(newCell)
+        }
+      }
+      area.replaceChildren(gameBoard);
+    }
+    return { displayBoardConsole, displayBoardDOM }
+  })()
+
+  return { addPiece, checkVictory, board, generateBoard, displayController }
 })()
