@@ -1,5 +1,30 @@
 const myLibrary = []
 
+class Book {
+  constructor(title, author, pages, read) {
+    this.title = title;
+    this.author = author;
+    this.pages = pages;
+    this.read = read;
+  }
+
+  info() {
+    info_string = this.title + " by " +
+      this.author + ", " +
+      this.pages + " pages, "
+    if (this.read) {
+      info_string += "read"
+    } else {
+      info_string += "not read yet"
+    }
+    return info_string
+  }
+
+  toggleRead() {
+    this.read = !this.read
+  }
+}
+
 bookshelf = document.querySelector("#bookshelf")
 newBookButton = document.querySelector("#add-book")
 newBookModal = document.querySelector("dialog#create-book")
@@ -43,30 +68,6 @@ function handleNewBook(e) {
 
 function removeBook(index) {
   myLibrary.splice(index, 1)
-}
-
-function Book(title, author, pages, read) {
-  this.title = title
-  this.author = author
-  this.pages = pages
-  this.read = read
-
-  this.info = function() {
-    info_string = ""
-    info_string += this.title + " by " +
-      this.author + ", " +
-      this.pages + " pages, "
-    if (this.read) {
-      info_string += "read"
-    } else {
-      info_string += "not read yet"
-    }
-    return info_string
-  }
-
-  this.toggleRead = function() {
-    this.read = !this.read
-  }
 }
 
 function addBookToLibrary(book) {
